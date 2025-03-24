@@ -61,14 +61,11 @@ def is_ordered_block(w3, block_num):
 	
 	priority_fees = []
 	for tx in transactions:
-		tx = w3.eth.get_transaction(tx)
-		
-		# Determine transaction type (0 or 2)
 		tx_type = tx.type if tx.type is not None else 0
 
 		if tx_type == 2 and base_fee_per_gas is not None:
 			# EIP-1559 transaction
-			priority_fee = min(tx.maxPriorityFeePerGas, tx.maxFeePerGas - block.baseFeePerGas)
+			priority_fee = min(tx.maxPriorityFeePerGas, tx.maxFeePerGas - base_fee_per_gas)
 		else:
 			# Legacy transaction
 			priority_fee = tx.gasPrice if base_fee_per_gas is None else tx.gasPrice - base_fee_per_gas
