@@ -37,7 +37,7 @@ def get_ape_info(ape_id):
 
     # get gateway url using tokenURI
     ipfs_hash = token_uri.replace("ipfs://", "")
-    gateway_url = f"https://gateway.pinata.cloud/ipfs.{ipfs_hash}"
+    gateway_url = f"https://gateway.pinata.cloud/ipfs/{ipfs_hash}"
 
     # fetch the metadata
     metadata = requests.get(gateway_url).json()
@@ -45,7 +45,9 @@ def get_ape_info(ape_id):
     # get image
     data['image'] = metadata['image']
     # get eyes
-    data['eyes'] = metadata['attributes'][0]['value']
+    attributes = metadata['attributes']
+    eyes = next((attr['value'] for attr in attributes if attr['trait_type'] == 'Eyes'), None)
+    data['eyes'] = eyes
 
 
     assert isinstance(data, dict), f'get_ape_info{ape_id} should return a dict'
